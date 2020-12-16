@@ -1,5 +1,5 @@
 ---
-title: "Assignment 4: K Means Clustering"
+title: 'Assignment 4: K Means Clustering'
 ---
 
 In this assignment we will be applying the K-means clustering algorithm we looked at in class. At the following link you can find a description of K-means:
@@ -214,7 +214,7 @@ ML2$fit3a.cluster <- ifelse(ML2$fit3a.cluster == 1, "A","B")
 ggplot(ML2, aes(x = fit2c.cluster, y = fit3a.cluster, size = count)) + geom_point()
 
 geom_bar(stat = "identity", position = "fill", colour = "black")
-install.packages("vcd")
+
 library(vcd)
 
 P1 <- structable(fit2c$cluster ~ fit3a$cluster)
