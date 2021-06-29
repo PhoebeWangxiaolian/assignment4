@@ -39,7 +39,6 @@ We will remove people with missing values for this assignment, but keep in mind 
 
 
 ```{r}
-
 K3 <- na.omit(K2) #This command create a data frame with only those people with no missing values. It "omits" all rows with missing values, also known as a "listwise deletion". EG - It runs down the list deleting rows as it goes.
 K3 = K2
 K3[is.na(K3)] = 0
@@ -48,7 +47,6 @@ K3[is.na(K3)] = 0
 Another pre-processing step used in K-means is to standardize the values so that they have the same range. We do this because we want to treat each week as equally important - if we do not standardise then the week with the largest range will have the greatest impact on which clusters are formed. We standardise the values by using the "scale()" command.
 
 ```{r}
-
 K3 <- scale(K3)
 K3
 ```
@@ -67,7 +65,6 @@ Notice that in this case we have 5 variables and in class we only had 2. It is i
 Also, we need to choose the number of clusters we think are in the data. We will start with 2.
 
 ```{r}
-
 fit1a <- kmeans(K3,2)
 fit1b = kmeans(K3,2)
 fit1c = kmeans(K3,2)
@@ -75,13 +72,9 @@ fit1a
 fit1b 
 fit1c
 #We have created an object called "fit" that contains all the details of our clustering including which observations belong to each cluster.
-
 #We can access the list of clusters by typing "fit$cluster", the top row corresponds to the original order the rows were in. Notice we have deleted some rows.
 fit1b$cluster
-
-
 #We can also attach these clusters to the original dataframe by using the "data.frame" command to create a new data frame called K4.
-
 K4 = data.frame(K3, fit1a$cluster,fit1b$cluster,fit1c$cluster)
 fit1a$withinss
 fit1b$withinss
@@ -102,7 +95,6 @@ Now we need to visualize the clusters we have created. To do so we want to play 
 
 First lets use tidyr to convert from wide to long format.
 ```{r}
-
 K5 <- gather(K4, "week", "motivation", 1:5)
 ```
 
@@ -126,10 +118,8 @@ We are going to create a line plot similar to the one created in this paper abou
 Likewise, since "cluster" is not numeric but rather a categorical label we want to convert it from an "integer" format to a "factor" format so that ggplot does not treat it as a number. We can do this with the as.factor() command.
 
 ```{r}
-
 K6$week = as.numeric(K6$week)
 K6$cluster = as.factor(K6$cluster)
-
 ```
 
 Now we can plot our line plot using the ggplot command, "ggplot()".
@@ -140,9 +130,7 @@ Now we can plot our line plot using the ggplot command, "ggplot()".
 - Finally we are going to clean up our axes labels: xlab("Week") & ylab("Average Motivation")
 
 ```{r}
-
 ggplot(K6, aes(week, avg, colour = cluster)) + geom_line() + xlab("Week") + ylab("Average Motivation")
-
 ```
 
 What patterns do you see in the plot?
@@ -167,10 +155,8 @@ library(tidyverse)
 M1 <- read.csv("HUDK405020-cluster.csv", header = T)
 M2 <- select(M1,4:9)
 M2[M2==""] <- NA
-
 M2 <- na.omit(M2)
 M2 <- as.data.frame(scale(M2))
-
 fit2a <- kmeans(M2, 1)
 fit2b <- kmeans(M2, 2)
 fit2c <- kmeans(M2, 3)
@@ -178,25 +164,19 @@ fit2d <- kmeans(M2, 4)
 fit2e <- kmeans(M2, 5)
 fit2f <- kmeans(M2, 6)
 fit2g <- kmeans(M2, 7)
-
 mss<- c(fit2a$tot.withinss,fit2b$tot.withinss,fit2c$tot.withinss,fit2d$tot.withinss,fit2e$tot.withinss,fit2f$tot.withinss,fit2g$tot.withinss, fit2a$betweenss,fit2b$betweenss,fit2c$betweenss,fit2d$betweenss,fit2e$betweenss,fit2f$betweenss,fit2g$betweenss)
-
 clusters <- c(seq(1,7,1),seq(1,7,1))
 col <- c(rep("red",7), rep("blue",7))
 plot(clusters, mss, col = col)
-
 L1 <- select(M1, 2:3)
 plot(L1$long, L1$lat)
-
 fit3a <- kmeans(L1, 2)
 fit3b <- kmeans(L1, 2)
 fit3c <- kmeans(L1, 2)
-
 fit3a$tot.withinss
 fit3b$tot.withinss
 fit3c$tot.withinss
 ML <- data.frame(M1$compare.features, M1$math.accuracy,M1$planner.use,M1$enjoy.discuss,M1$enjoy.group,M1$meet.deadline, fit2c$cluster, M1$lat,M1$long, fit3a$cluster)
-
 pairs(ML)
 ```
 
@@ -206,21 +186,14 @@ Create a visualization that shows the overlap between the two clusters each stud
 
 ```{r}
 DF <- data.frame(table(ML$fit2c.cluster,ML$fit3a.cluster))
-
 ML2 <- ML %>% group_by(fit2c.cluster,fit3a.cluster) %>% summarize(count = n())
-
 ML2$fit3a.cluster <- ifelse(ML2$fit3a.cluster == 1, "A","B")
-
 ggplot(ML2, aes(x = fit2c.cluster, y = fit3a.cluster, size = count)) + geom_point()
-
 geom_bar(stat = "identity", position = "fill", colour = "black")
-
 library(vcd)
-
 P1 <- structable(fit2c$cluster ~ fit3a$cluster)
 mosaic(P1, shade=TRUE, legend=TRUE) 
 ```
 
 
 ## Please render your code as an .html file using knitr and Pull Resquest both your .Rmd file and .html files to the Assignment 3 repository.
-
